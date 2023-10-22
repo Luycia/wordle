@@ -165,9 +165,11 @@ class Wordle:
         print(f"You have lost. The secret word was {guess}.")
 
 
-def select_options(options: List[str], default: str = '1') -> str:
+def select_options(options: List[str], default: str = '1', help: str = None) -> str:
     options_str = "  ".join(
         [f"{i+1}: {option}" for i, option in enumerate(options)])
+    if help:
+        options_str = f'{help} {options_str}'
     while True:
         user_input = input(f"  {options_str} [{default}] ") or default
         if user_input.isnumeric():
@@ -198,12 +200,12 @@ def load_solver(five_letter_words: List[str]) -> Solver:
 
 
 def configure_game() -> GameConfig:
-    print("Select game configuration")
+    print("Select game configuration (type number)")
     config = {}
     config['solver_help'] = SolverHelp[select_options(
-        [d.name for d in SolverHelp], default='1')]
+        [d.name for d in SolverHelp], default='1', help="Using solver")]
     config['difficulty'] = Difficulty[select_options(
-        [d.name for d in Difficulty], default='2')]
+        [d.name for d in Difficulty], default='2', help="Game difficulty")]
     return GameConfig(**config)
 
 

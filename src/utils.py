@@ -5,7 +5,7 @@ from typing import Any, List
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', Path(__file__).resolve().parent)
+    base_path = getattr(sys, '_MEIPASS', Path(__file__).resolve().parent.parent)
     return Path(base_path) / relative_path
 
 

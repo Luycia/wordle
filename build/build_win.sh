@@ -1,0 +1,1 @@
+pyinstaller -F --add-data "data:data" --icon build/icon.ico --name wordle src/app.py

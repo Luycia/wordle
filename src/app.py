@@ -103,7 +103,7 @@ class Wordle:
                                                           self.patterns[-1])):
                     if color == Color.Green:
                         if user_input[pos] != letter:
-                            print(f"{pos}st letter must be {letter}")
+                            print(f"{pos+1}st letter must be {letter}")
                             return False
                     if color == Color.Yellow:
                         if letter not in user_input:

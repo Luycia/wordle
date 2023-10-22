@@ -1,5 +1,5 @@
 __pycache__
 .*
-build
+build/wordle
 dist
 *.spec

@@ -1,0 +1,1 @@
+pyinstaller -F --add-data "data:data" --icon build/icon.icns --osx-bundle-identifier com.luycia.games --name wordle src/app.py

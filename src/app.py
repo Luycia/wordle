@@ -1,3 +1,4 @@
+import multiprocessing
 import random
 import string
 from typing import Any, Dict, List
@@ -223,6 +224,7 @@ def main():
 
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     try:
         main()
     except KeyboardInterrupt:

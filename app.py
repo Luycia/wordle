@@ -1,10 +1,12 @@
-from typing import List, Dict, Any
 import random
-import utils
-from solving import Solver
-from model import Color, GameConfig, Difficulty, SolverHelp
-from termcolor import cprint
 import string
+from typing import Any, Dict, List
+
+from termcolor import cprint
+
+import utils
+from model import Color, Difficulty, GameConfig, SolverHelp
+from solving import Solver
 
 
 class Wordle:

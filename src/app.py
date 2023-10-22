@@ -156,13 +156,13 @@ class Wordle:
                 self.entropy_gains = None
                 self.show_guesses([guess], [pattern])
                 print(
-                    f"You have won after {n_guess} guesses. The secret word was {guess}.")
+                    f"You have won after {n_guess} guesses. The secret word was {secret_word}.")
                 return
             if self.solver:
                 self.solver.feed(guess, pattern)
                 end_entropy = self.solver.get_words_entropy()
                 self.entropy_gains.append(start_entropy - end_entropy)
-        print(f"You have lost. The secret word was {guess}.")
+        print(f"You have lost. The secret word was {secret_word}.")
 
 
 def select_options(options: List[str], default: str = '1', help: str = None) -> str:

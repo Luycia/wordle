@@ -5,7 +5,6 @@ from typing import Any, Dict, List
 
 from termcolor import cprint
 
-import model
 import utils
 from model import Color, Difficulty, GameConfig, Language, SolverHelp
 from solving import Solver

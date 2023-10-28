@@ -6,8 +6,10 @@ from typing import Any, Dict, List
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', Path(
-        __file__).resolve().parent.parent)
+    relative_path = Path(relative_path)
+    if relative_path.is_absolute():
+        return relative_path
+    base_path = getattr(sys, '_MEIPASS', Path(__file__).resolve().parent.parent)
     return Path(base_path) / relative_path
 
 
@@ -27,6 +29,7 @@ def read_file(path: str, nullable: bool = False) -> str:
     path = resource_path(path)
     if nullable and not path.exists():
         return None
+    
     with open(path, encoding='utf-8') as f:
         return f.read()
 
@@ -46,5 +49,5 @@ def write_jsons(path: str, obj: str) -> None:
 def write_json(path: str, obj: Any) -> None:
     path = resource_path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(Path(path), 'w', encoding='utf-8') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         json.dump(obj, f, indent=4)

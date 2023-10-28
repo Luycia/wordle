@@ -233,7 +233,7 @@ def configure_game(path: str) -> GameConfig:
 
 def main():
     print("Stop the game with ctrl + c (KeyboardInterrupt)")
-    config = configure_game('data/settings.json')
+    config = configure_game(utils.Path.home() /'.wordle/settings.json')
     secret_words, database = load_words(config.language)
     if config.solver_help > SolverHelp.NEVER:
         solver = load_solver(database, config.language)

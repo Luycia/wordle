@@ -25,7 +25,7 @@ class Wordle:
         self.letters = {letter: None for letter in string.ascii_lowercase}
         if config.language == Language.DE:
             self.letters = {
-                letter: None for letter in string.ascii_lowercase + 'äöü'}
+                letter: None for letter in string.ascii_lowercase + 'äöüß'}
         else:
             self.letters = {
                 letter: None for letter in string.ascii_lowercase}

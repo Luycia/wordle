@@ -12,12 +12,12 @@ class Solver:
         self.words: Final[List[str]] = words
         self.filtered: List[str] = words
         self.possible_patterns: List[Tuple[Color]] = list(itertools.product(
-            [Color.Grey, Color.Green, Color.Yellow], repeat=5))
+            [Color.GREY, Color.GREEN, Color.YELLOW], repeat=5))
 
         if start_recomendations:
-            self.start_recomendation = start_recomendations
+            self.start_recomendations = start_recomendations
         else:
-            self.start_recomendation = self.get_best_guess()
+            self.start_recomendations = self.get_best_guess()
 
     def reset(self):
         self.filtered = self.words
@@ -25,8 +25,8 @@ class Solver:
     def analyse_pattern(self, word: str, pattern: List[Color]) -> Set[Cell]:
         knowledge = set()
         for pos, color in enumerate(pattern):
-            if color == Color.Grey:
-                knowledge.add(Cell(word[pos], Color.Grey))
+            if color == Color.GREY:
+                knowledge.add(Cell(word[pos], Color.GREY))
             else:
                 knowledge.add(Cell(word[pos], color, pos))
 
@@ -45,10 +45,10 @@ class Solver:
         filtered = self.filtered
         pattern = self.analyse_pattern(word, pattern)
         for cell in pattern:
-            if cell.color == Color.Grey:
+            if cell.color == Color.GREY:
                 filtered = self.filter_words_without_letter(
                     cell.letter, filtered)
-            elif cell.color == Color.Green:
+            elif cell.color == Color.GREEN:
                 filtered = self.filter_words_position(
                     cell.letter, cell.position, filtered)
             else:

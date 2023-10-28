@@ -1,11 +1,16 @@
-from enum import IntEnum
 from dataclasses import dataclass
+from enum import Enum, IntEnum
+from typing import Self
+
+from dataclasses_json import dataclass_json
+
+import utils
 
 
 class Color(IntEnum):
-    Grey = 1
-    Yellow = 2
-    Green = 3
+    GREY = 1
+    YELLOW = 2
+    GREEN = 3
 
 
 @dataclass(frozen=True)
@@ -16,18 +21,34 @@ class Cell:
 
 
 class Difficulty(IntEnum):
-    Easy = 1
-    Medium = 2
-    Hard = 3
+    EASY = 1
+    MEDIUM = 2
+    HARD = 3
 
 
 class SolverHelp(IntEnum):
-    No = 1
-    Tips = 2
-    Yes = 3
+    NEVER = 1
+    TIPS = 2
+    ALWAYS = 3
 
 
+class Language(Enum):
+    EN = 1
+    DE = 2
+
+
+@dataclass_json
 @dataclass
 class GameConfig:
-    difficulty: Difficulty = Difficulty.Easy
-    solver_help: SolverHelp = SolverHelp.No
+    language: Language = Language.EN
+    difficulty: Difficulty = Difficulty.MEDIUM
+    solver_help: SolverHelp = SolverHelp.TIPS
+
+    def to_file(self, path: str) -> None:
+        utils.write_jsons(path, self.to_json())
+
+    def from_file(path: str) -> Self:
+        try:
+            return GameConfig.from_json(utils.read_file(path))
+        except:
+            return GameConfig()

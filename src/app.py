@@ -3,7 +3,7 @@ import random
 import string
 from typing import Any, Dict, List
 
-from termcolor import cprint
+from termcolor import colored, cprint
 
 import utils
 from model import Color, Difficulty, GameConfig, Language, SolverHelp
@@ -166,13 +166,14 @@ class Wordle:
                 self.entropy_gains = None
                 self.show_guesses([guess], [pattern])
                 print(
-                    f"You have won after {n_guess} guesses. The secret word was {secret_word}.")
+                    f"You have won after {n_guess} guesses. The secret word was {colored(secret_word, 'light_green', attrs=['bold'])}.")
                 return
             if self.solver:
                 self.solver.feed(guess, pattern)
                 end_entropy = self.solver.get_words_entropy()
                 self.entropy_gains.append(start_entropy - end_entropy)
-        print(f"You have lost. The secret word was {secret_word}.")
+        print(
+            f"You have lost. The secret word was {colored(secret_word, 'light_red', attrs=['bold'])}.")
 
 
 def load_solver(database: List[str], lang: Language) -> Solver:
@@ -233,7 +234,7 @@ def configure_game(path: str) -> GameConfig:
 
 def main():
     print("Stop the game with ctrl + c (KeyboardInterrupt)")
-    config = configure_game(utils.Path.home() /'.wordle/settings.json')
+    config = configure_game(utils.Path.home() / '.wordle/settings.json')
     secret_words, database = load_words(config.language)
     if config.solver_help > SolverHelp.NEVER:
         solver = load_solver(database, config.language)

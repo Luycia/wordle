@@ -74,13 +74,14 @@ class Wordle:
         print()
 
     def show_letter_panel(self):
+        letters = self.letters.copy()
         for guess, pattern in zip(self.guesses, self.patterns):
             for letter, color in zip(guess, pattern):
-                if not self.letters[letter] or color > self.letters[letter]:
-                    self.letters[letter] = color
+                if not letters[letter] or color > letters[letter]:
+                    letters[letter] = color
 
         print('\t', end='')
-        for letter, color in self.letters.items():
+        for letter, color in letters.items():
             if color:
                 color = color.name.lower()
             cprint(letter, color, attrs=['bold'], end=' ')

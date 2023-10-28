@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-latest
@@ -21,12 +24,7 @@ jobs:
     - name: Build package
       run: pyinstaller -F --add-data "data:data" --icon build/icon.icns --osx-bundle-identifier com.luycia.games --name wordle src/app.py
     - name: Publish package
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-          upload_url: https://github.com/Luycia/wordle/releases/latest
-          asset_path: ./dist/wordle
-          asset_name: wordle
-          asset_content_type: application/zip
+        files: ./dist/wordle

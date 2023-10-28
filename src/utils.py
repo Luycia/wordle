@@ -24,7 +24,7 @@ def read_textlines(path: str, nullable: bool = False) -> List[Any]:
 
 
 def read_file(path: str, nullable: bool = False) -> str:
-    path = Path(path)
+    path = resource_path(path)
     if nullable and not path.exists():
         return None
     with open(path, encoding='utf-8') as f:
@@ -32,7 +32,7 @@ def read_file(path: str, nullable: bool = False) -> str:
 
 
 def read_json(path: str, nullable: bool = False) -> Dict[str, Any]:
-    path = Path(path)
+    path = resource_path(path)
     if nullable and not path.exists():
         return None
     with open(path, encoding='utf-8') as f:
@@ -44,7 +44,7 @@ def write_jsons(path: str, obj: str) -> None:
 
 
 def write_json(path: str, obj: Any) -> None:
-    path = Path(path)
+    path = resource_path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(Path(path), 'w', encoding='utf-8') as f:
         json.dump(obj, f, indent=4)

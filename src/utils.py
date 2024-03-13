@@ -51,7 +51,7 @@ def read_ini(path: str, default: str = None) -> configparser.ConfigParser:
     sources = [resource_path(path)]
     if default and default != path:
         sources.insert(0, resource_path(default))
-    parser.read(sources)
+    parser.read(sources, encoding='utf-8')
     return parser
 
 

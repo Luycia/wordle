@@ -1,6 +1,7 @@
+import operator
 from dataclasses import dataclass
 from enum import Enum, IntEnum
-from typing import Self, List
+from typing import List, Self
 
 from dataclasses_json import dataclass_json
 
@@ -20,10 +21,10 @@ class LetterRule:
         self.colors = [color]
         if color == Color.GREY:
             self.frequency = 0
-            self.operator = '='
+            self.operator = operator.eq
         else:
             self.frequency = 1
-            self.operator = '>='
+            self.operator = operator.ge
 
         self.positions = [
             position] if position is not None and color == Color.GREEN else []
@@ -33,7 +34,7 @@ class LetterRule:
     def add_color(self, color: Color, position: int):
         self.colors.append(color)
         if color == Color.GREY:
-            self.operator = '='
+            self.operator = operator.eq
         elif color == Color.YELLOW:
             self.frequency += 1
             self.not_positions.append(position)

@@ -180,8 +180,7 @@ class Wordle:
             print(f"\n{self.ui_text.get('output', 'newgame_with_solver')}")
             self.solver.reset()
         else:
-            print(f"\n{self.ui_text.get(
-                'output', 'newgame_without_solver')}")
+            print(f"\n{self.ui_text.get('output', 'newgame_without_solver')}")
 
         self.init_round()
 

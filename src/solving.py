@@ -39,17 +39,11 @@ class Solver:
             else:
                 rules[letter] = LetterRule(letter, color, pos)
 
-        return rules.values()
-
-    def filter_words_without_letter(self, letter, words):
-        return [word for word in words if letter not in word]
+        return list(rules.values())
 
     def filter_words_letter_occurrences(self, letter: str, frequency: int,
-                                        operator: str, words: List[str]) -> List[str]:
-        if operator == '=':
-            return [word for word in words if self.words_letter_count[word][letter] == frequency]
-        else:
-            return [word for word in words if self.words_letter_count[word][letter] >= frequency]
+                                        operator, words: List[str]) -> List[str]:
+        return [word for word in words if operator(self.words_letter_count[word][letter], frequency)]
 
     def filter_words_position(self, letter, positions, words):
         return [word for word in words if all(word[pos] == letter for pos in positions)]
@@ -64,18 +58,14 @@ class Solver:
 
         filtered = self.filtered
         for rule in rules:
-            if rule.frequency == 0:
-                filtered = self.filter_words_without_letter(
-                    rule.letter, filtered)
-            else:
-                filtered = self.filter_words_letter_occurrences(
-                    rule.letter, rule.frequency, rule.operator, filtered)
-                if len(rule.positions) > 0:
-                    filtered = self.filter_words_position(
-                        rule.letter, rule.positions, filtered)
-                if len(rule.not_positions) > 0:
-                    filtered = self.filter_words_not_position(
-                        rule.letter, rule.not_positions, filtered)
+            filtered = self.filter_words_letter_occurrences(
+                rule.letter, rule.frequency, rule.operator, filtered)
+            if len(rule.positions) > 0:
+                filtered = self.filter_words_position(
+                    rule.letter, rule.positions, filtered)
+            if len(rule.not_positions) > 0:
+                filtered = self.filter_words_not_position(
+                    rule.letter, rule.not_positions, filtered)
 
         return filtered
 

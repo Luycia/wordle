@@ -1,15 +1,18 @@
-import math
 import itertools
-from typing import List, Set, Tuple, Final
-from model import Color, Cell
-from tqdm import tqdm
+import math
+from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
+from typing import Dict, List, Tuple
+
+from tqdm import tqdm
+
+from model import Color, LetterRule
 
 
 class Solver:
     def __init__(self, words: List[str],
                  start_recomendations: List[Tuple[str, float]] = None) -> None:
-        self.words: Final[List[str]] = words
+        self.words_letter_count = {word: Counter(word) for word in words}
         self.filtered: List[str] = words
         self.possible_patterns: List[Tuple[Color]] = list(itertools.product(
             [Color.GREY, Color.GREEN, Color.YELLOW], repeat=5))
@@ -19,41 +22,61 @@ class Solver:
         else:
             self.start_recomendations = self.get_best_guess()
 
-    def reset(self):
-        self.filtered = self.words
+    def reset(self) -> None:
+        self.filtered = list(self.words_letter_count.keys())
 
-    def analyse_pattern(self, word: str, pattern: List[Color]) -> Set[Cell]:
-        knowledge = set()
+    def analyse_pattern(self, word: str, pattern: List[Color]) -> List[LetterRule]:
+        rules: Dict[str, LetterRule] = {}
         for pos, color in enumerate(pattern):
-            if color == Color.GREY:
-                knowledge.add(Cell(word[pos], Color.GREY))
+            letter = word[pos]
+            if letter in rules:
+                # After yellow color for a letter a grey color cannot follow
+                # e.g. for the word 'speed' grey cannot be followed after grey
+                # since first grey means, there is no letter 'e' in the secret word
+                if color == Color.YELLOW and Color.GREY in rules[letter].colors:
+                    return None
+                rules[letter].add_color(color, pos)
             else:
-                knowledge.add(Cell(word[pos], color, pos))
+                rules[letter] = LetterRule(letter, color, pos)
 
-        return knowledge
+        return rules.values()
 
     def filter_words_without_letter(self, letter, words):
         return [word for word in words if letter not in word]
 
-    def filter_words_position(self, letter, position, words):
-        return [word for word in words if word[position] == letter]
+    def filter_words_letter_occurrences(self, letter: str, frequency: int,
+                                        operator: str, words: List[str]) -> List[str]:
+        if operator == '=':
+            return [word for word in words if self.words_letter_count[word][letter] == frequency]
+        else:
+            return [word for word in words if self.words_letter_count[word][letter] >= frequency]
 
-    def filter_words_not_position(self, letter, position, words):
-        return [word for word in words if letter in word and word[position] != letter]
+    def filter_words_position(self, letter, positions, words):
+        return [word for word in words if all(word[pos] == letter for pos in positions)]
+
+    def filter_words_not_position(self, letter, positions, words):
+        return [word for word in words if all(word[pos] != letter for pos in positions)]
 
     def filter_words(self, word: str, pattern: List[Color]):
+        rules = self.analyse_pattern(word, pattern)
+        if rules is None:
+            return []
+
         filtered = self.filtered
-        pattern = self.analyse_pattern(word, pattern)
-        for cell in pattern:
-            if cell.color == Color.GREY:
+        for rule in rules:
+            if rule.frequency == 0:
                 filtered = self.filter_words_without_letter(
-                    cell.letter, filtered)
-            elif cell.color == Color.GREEN:
-                filtered = self.filter_words_position(
-                    cell.letter, cell.position, filtered)
+                    rule.letter, filtered)
             else:
-                filtered = self.filter_words_not_position(
-                    cell.letter, cell.position, filtered)
+                filtered = self.filter_words_letter_occurrences(
+                    rule.letter, rule.frequency, rule.operator, filtered)
+                if len(rule.positions) > 0:
+                    filtered = self.filter_words_position(
+                        rule.letter, rule.positions, filtered)
+                if len(rule.not_positions) > 0:
+                    filtered = self.filter_words_not_position(
+                        rule.letter, rule.not_positions, filtered)
+
         return filtered
 
     def feed(self, word: str, pattern: List[Color]):

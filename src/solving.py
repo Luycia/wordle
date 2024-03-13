@@ -108,4 +108,4 @@ class Solver:
         return word_information
 
     def get_words_entropy(self) -> float:
-        return -math.log(1/len(self.filtered), 2) if len(self.filtered) > 0 else 0
+        return math.log(len(self.filtered), 2) if len(self.filtered) > 0 else 0

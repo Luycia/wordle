@@ -93,7 +93,7 @@ class Wordle:
                 if color is not None:
                     color = color.name.lower()
                 cprint(letter, color, attrs=['bold'], end=' ')
-            if gain:
+            if gain is not None:
                 print(f'[{gain:.2f} bit]', end='')
             print()
         print()
@@ -114,8 +114,7 @@ class Wordle:
 
     def show_solver(self, n_tops: int = 5):
         start_entropy = self.solver.get_words_entropy()
-        print(
-            f"Before guess entropy {start_entropy:.2f}, {len(self.solver.filtered)} possible words left")
+        print(self.ui_text.get('output', 'solver_before').format(start_entropy, len(self.solver.filtered)))
         if self.n_guess == 1:
             solver_tips = self.solver.start_recomendations[:n_tops]
         else:
